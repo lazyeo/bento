@@ -17,6 +17,34 @@ pre-1.0.
   "current" exports either. The offline export refuses linked resources rather
   than fetching them. Images and ZIPs from a password-protected deck are not
   encrypted; the original `.bento.html` is unchanged. Measured in Chrome only.
+  
+## [1.0.18] — 2026-08-15
+
+- **Security: offline mode did not block everything it promised.** The switch
+  says "nothing leaves this computer", and five things still went out with it
+  on: a manual *Check for updates* called the release server, *Manage
+  languages…* downloaded the pack index and any pack you added, a deck's video
+  or image pointing at a web address still loaded from it, requests already
+  running were left to finish, and a second tab that was already in a live
+  session kept syncing edits.
+
+  The last two matter most. A remote image or video in a document is the
+  cheapest tracking beacon there is — it tells whoever hosts it that you opened
+  the file, and when — and offline mode is exactly what you would turn on
+  before opening a deck you did not write. The second tab was worse: real
+  document content kept moving.
+
+  Separately, where a browser blocks site data — a private window, or a
+  locked-down setup — the checkbox showed the switch on while nothing had been
+  stored, so it did nothing at all. It now holds for the session regardless and
+  says plainly that it will not survive a reload.
+
+  Offline mode now covers all of it: the network is reachable from exactly one
+  place in the code, flipping the switch cuts requests and connections that are
+  already open rather than only the next one, and a deck's remote images and
+  video are left unloaded. Reported privately, with a reproduction — and found
+  by watching real traffic after reading the code twice suggested there was
+  nothing wrong.
 
 - **Updating a file no longer interrupts you.** With Bento Tray installed and a
   folder granted, "Update this file" now finishes without a single dialog. The
@@ -29,6 +57,25 @@ pre-1.0.
   machinery, which asks where to put things if you have told Chrome to; and an
   update of a double-clicked file described itself to the extension as an
   export, so the extension — correctly — refused to write it for you.
+
+- **Fix: Share opened cut in half on a narrow window.** Once the window is
+  narrow enough to fold the toolbar into ⋯, opening **Share** from that menu
+  drew the popover sliced down its left edge, with the properties panel showing
+  through the gap where the rest of it should have been. Share and Language now
+  open as a section of the ⋯ list itself — full width, scrolling with it,
+  nothing hanging over an edge to be cut off.
+
+  The ⋯ menu scrolls when it has more in it than fits on screen, and a box that
+  scrolls in one direction quietly clips the other whether you asked for that or
+  not. Anything floating inside it was always going to be trimmed. Wide windows
+  were never affected: the fold only happens when the toolbar runs out of room.
+
+- **The update card drops its peach stripe.** The "Version X is available" card
+  in About carried a thick accent rule down its leading edge — the only stripe
+  of its kind anywhere in the app, and a hard-coded colour, so it stayed peach
+  while everything around it moved into dark mode. It now has the same quiet
+  1px border as every other surface in the dialog and themes along with them.
+  The accent stays where it earns its place: on the button you press.
 
 ## [1.0.17] — 2026-08-10
 
